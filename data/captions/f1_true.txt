@@ -1,0 +1,6 @@
+Fig. 1
+Transcriptomic developmental cell-type atlas of the mouse visual cortex.
+a, Schematic timeline of samples collected from scRNA-seq and Multiome in this study along with major developmental events of the isocortex.
+b, The transcriptomic taxonomy tree of 148 clusters organized in a dendrogram (scRNA-seq, n = 568,654 cells; Multiome, n = 200,061 nuclei). The classes and subclasses are marked on the taxonomy tree. Full cluster names are provided in Supplementary Table 3. Bar plots represent (top to bottom): major neurotransmitter (NT) type, number of scRNA-seq cells, number of Multiome nuclei, age distribution of scRNA-seq cells, age distribution of Multiome nuclei and number of scRNA-seq subclusters for each cluster. 
+c–i, UMAP representations of all cell types coloured by class (c), subclass (d), cluster (e), subcluster (f), age (g), synchronized age (h) and pseudotime (i). 
+j, Constellation plot showing the UMAP centroids of subcluster nodes coloured by cluster.

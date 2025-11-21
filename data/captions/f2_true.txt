@@ -1,0 +1,7 @@
+Fig. 2
+Developmental trajectories of visual cortex cell subclasses.
+a, Transcriptomic trajectories of visual cortex cell subclasses with estimated timings of onset and major branching nodes. 
+b, Relative proportions of cells corresponding to the different subclasses at each age. Note that relative proportions between neuronal and non-neuronal cells do not reflect the actual situation owing to the variable FACS methods used for different scRNA-seq libraries (Methods, Extended Data Fig. 1d and Supplementary Table 1). 
+c, UMAP representations of early developmental cell types coloured by subclass, cluster, age and expression of key marker genes separating different trajectories. 
+d, Dot plot showing the expression of DE genes across embryonic ages and P0 in NEC and RG populations. The numbers of NECs and RG at each age point are shown at the bottom. 
+e, Representative MERFISH sections at P0 and P56 with specific cell types labelled. an, anterior section that includes the somatosensory cortex; po, posterior section that includes the visual cortex; scl, subcluster.

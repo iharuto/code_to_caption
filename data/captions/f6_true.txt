@@ -1,0 +1,5 @@
+Fig. 6
+Integration of scRNA-seq and snMultiome data and correspondence of chromatin accessibility and gene expression across glutamatergic neuron types and ages during development.
+a–d, UMAP representations
+of scRNA-seq cells and snMultiome nuclei in the integrated space, coloured by subclass (a), data modality (b) and age in scRNA-seq (c) or snMultiome (d) datasets. The scRNA-seq cells shown in the UMAP are the subsampled ones (up to 200 cells per cluster) used for scVI integration. 
+e,f, Heatmap representations of correspondence of chromatin accessibility and gene expression across IT subclasses (e) and nonIT subclasses (f) and ages during development. In each panel, each row corresponds to a peak–gene pair, ordered by peak module and peak–gene correlation, and each column corresponds to a subclass-by- age group. The left-hand and right-hand heatmaps show the average peak accessibility and average gene expression, respectively, in each subclass- by-age group. Accessibility and expression values are normalized, with a maximum value of 1 per peak or gene and 0 indicating no accessibility or expression.
