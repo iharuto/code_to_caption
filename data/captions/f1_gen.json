@@ -1,0 +1,18 @@
+[
+    {
+        "Date": "2025-11-21",
+        "Time": "17:00:30",
+        "prompt id": 1,
+        "prompt link": "4_2",
+        "Title": "Overview of cell-type taxonomy, sampling, and embedding structure across development",
+        "Main": [
+            {
+                "a": "Developmental timeline summarizing sampled ages and key experimental events. Horizontal segments indicate the duration of each event, colored by event type, and aligned to discrete developmental age levels on the x-axis.",
+                "b": "Hierarchical cell-type tree from class to subclass to cluster, visualized as a dendrogram with nodes colored by class (top), the corresponding number of cells per cluster (middle), and total cell counts per class stratified by modality (bottom)",
+                "c-f": "UMAP embedding of all cells colored by class (c), subclass (d), cluster (e), and subcluster (f), illustrating the hierarchical organization of the taxonomy in the low-dimensional space.",
+                "g-i": "The same UMAP embedding colored by developmental age (g), binned or synchronized age (h), and pseudotime (i), showing the relationship between cell-state progression and developmental timing.",
+                "j": "Constellation-style representation of subclusters in UMAP space, where points denote subcluster centroids colored by class and edges connect each centroid to its k nearest neighbors, highlighting inter-subcluster relationships and class-level organization."
+            }
+        ]
+    }
+]
