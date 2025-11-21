@@ -1,16 +1,15 @@
-## ---------------------------------------------
-## Dummy data to mimic Fig. 1 (panels a–j)
-## ---------------------------------------------
-
 set.seed(123)
 
-# Developmental ages
+library(dplyr)
+library(tibble)
+
+## ------------------------------------------------------------
+## 1. Developmental timeline data (Fig. 1a)
+## ------------------------------------------------------------
+
 age_levels <- c("E10.5", "E12.5", "E13.5", "E14.5", "E15.5", "E16.5", "E17", "E18.5",
                 "P0", "P1", "P5", "P10", "P15", "P20", "P25", "P28", "P56")
 
-age_factor <- factor(age_levels, levels = age_levels, ordered = TRUE)
-
-# --- Fig. 1a dummy events -----------------------------------
 dev_events <- data.frame(
   event_id   = paste0("ev", seq_len(10)),
   event_name = c(
@@ -35,15 +34,22 @@ dev_events <- data.frame(
       "P20",  "P20",   "P15",   "P28",   "P15"),
     levels = age_levels, ordered = TRUE
   ),
-  track      = c(1,1,1,2,2,2,2,3,3,3)
+  track      = c(1,1,1,2,2,2,2,3,3,3),
+  stringsAsFactors = FALSE
 )
 
-# Helper numeric encoding for plotting segments on x-axis
 age_to_num <- function(x) as.numeric(factor(x, levels = age_levels, ordered = TRUE))
-dev_events$x_start <- age_to_num(dev_events$age_start)
-dev_events$x_end   <- age_to_num(dev_events$age_end)
 
-# --- Cell-level data (Fig. 1b–j) ----------------------------
+dev_events <- dev_events %>%
+  mutate(
+    x_start = age_to_num(age_start),
+    x_end   = age_to_num(age_end)
+  )
+
+## ------------------------------------------------------------
+## 2. Taxonomy and cell-level data (for UMAPs etc.)
+## ------------------------------------------------------------
+
 classes <- c(
   "NEC",
   "CR Glut",
@@ -90,7 +96,8 @@ nt_map <- c(
   "Immune"     = "Other"
 )
 
-taxonomy <- lapply(names(subclasses_list), function(cl){
+## taxonomy: class / subclass / cluster
+taxonomy_list <- lapply(names(subclasses_list), function(cl){
   subs <- subclasses_list[[cl]]
   do.call(rbind, lapply(subs, function(sc){
     n_clusters <- 2
@@ -102,11 +109,13 @@ taxonomy <- lapply(names(subclasses_list), function(cl){
       stringsAsFactors = FALSE
     )
   }))
-}) |> do.call(rbind, args = _)
+})
+taxonomy <- do.call(rbind, taxonomy_list)
 
 taxonomy$nt_type <- unname(nt_map[taxonomy$class])
 
-subclusters <- lapply(seq_len(nrow(taxonomy)), function(i){
+## subclusters: 3 per cluster
+subclusters_list2 <- lapply(seq_len(nrow(taxonomy)), function(i){
   cl_row <- taxonomy[i, ]
   n_sub <- 3
   data.frame(
@@ -117,8 +126,10 @@ subclusters <- lapply(seq_len(nrow(taxonomy)), function(i){
     nt_type      = cl_row$nt_type,
     stringsAsFactors = FALSE
   )
-}) |> do.call(rbind, args = _)
+})
+subclusters <- do.call(rbind, subclusters_list2)
 
+## cell-level table
 n_cells <- 500
 
 sub_idx <- sample(seq_len(nrow(subclusters)), size = n_cells, replace = TRUE)
@@ -149,3 +160,63 @@ cells <- data.frame(
   umap2          = umap2,
   stringsAsFactors = FALSE
 )
+
+## ------------------------------------------------------------
+## 3. Extra data for Fig. 1b: tree + bar
+## ------------------------------------------------------------
+
+## Edges for tree (class -> subclass -> cluster)
+edges_class_subclass <- taxonomy %>%
+  distinct(class, subclass) %>%
+  transmute(from = class, to = subclass)
+
+edges_subclass_cluster <- taxonomy %>%
+  distinct(subclass, cluster_id) %>%
+  transmute(from = subclass, to = cluster_id)
+
+edges <- bind_rows(edges_class_subclass, edges_subclass_cluster)
+
+## Node table with class annotation (for tree colors)
+nodes <- tibble(name = unique(c(edges$from, edges$to)))
+
+nodes <- nodes %>%
+  left_join(
+    taxonomy %>%
+      distinct(subclass, class) %>%
+      rename(node = subclass),
+    by = c("name" = "node")
+  ) %>%
+  left_join(
+    taxonomy %>%
+      distinct(cluster_id, class) %>%
+      rename(node = cluster_id),
+    by = c("name" = "node"),
+    suffix = c("_from_subclass", "_from_cluster")
+  ) %>%
+  mutate(
+    class_from_subclass = ifelse(is.na(class_from_subclass),
+                                 class_from_cluster, class_from_subclass),
+    class_node = dplyr::case_when(
+      name %in% classes ~ name,
+      !is.na(class_from_subclass) ~ class_from_subclass,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(name, class_node)
+
+## Dummy cell counts per cluster (for bar plot)
+set.seed(123)
+cluster_counts <- taxonomy %>%
+  mutate(n_cells = sample(50:300, size = n(), replace = TRUE))
+
+## ------------------------------------------------------------
+## 4. Save everything to a single RDS
+## ------------------------------------------------------------
+
+# export CSV
+write.csv(dev_events, "data/figure/s1_dev_events.csv", row.names = FALSE)
+write.csv(cells,      "data/figure/s1_cells.csv",      row.names = FALSE)
+write.csv(taxonomy,   "data/figure/s1_taxonomy.csv",   row.names = FALSE)
+write.csv(edges,      "data/figure/s1_tree_edges.csv", row.names = FALSE)
+write.csv(nodes,      "data/figure/s1_tree_nodes.csv", row.names = FALSE)
+write.csv(cluster_counts, "data/figure/s1_cluster_counts.csv", row.names = FALSE)
